@@ -32,6 +32,13 @@
   - Created project folder at `/home/pc-sam/devops-command-center`
   - Created `PROJECT_NOTES.md`
   - Initialized Git repository on branch `main`
+  - Created React frontend with Vite
+  - Created Node.js backend with Express
+  - Added backend `/health` route
+  - Added backend `/api/commands` route
+  - Connected frontend to backend commands API
+  - Confirmed frontend runs on `http://localhost:5173`
+  - Confirmed backend runs on `http://localhost:4000`
 
   ## Next Steps
 
@@ -39,3 +46,8 @@
   - Scaffold frontend app
   - Scaffold backend app
   - Add Docker Compose
+  - Add frontend environment variable for backend API URL
+  - Create Dockerfiles for frontend and backend
+  - Add Docker Compose for frontend, backend, and database
+  - Add PostgreSQL database service
+  - Replace hardcoded command data with database data
