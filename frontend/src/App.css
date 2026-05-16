@@ -78,6 +78,70 @@
 .section-heading {
   margin-bottom: 20px;
 }
+.command-form-section {
+    margin-bottom: 44px;
+  }
+
+  .command-form {
+    display: grid;
+    gap: 16px;
+    max-width: 720px;
+    padding: 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  .command-form label {
+    display: grid;
+    gap: 8px;
+    color: #111827;
+    font-weight: 700;
+  }
+
+  .command-form input,
+  .command-form textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 11px 12px;
+    color: #111827;
+    background: #ffffff;
+  }
+
+  .command-form textarea {
+    min-height: 96px;
+    resize: vertical;
+  }
+
+  .command-form button {
+    width: fit-content;
+    border: 0;
+    border-radius: 6px;
+    padding: 11px 16px;
+    color: #ffffff;
+    background: #2563eb;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .command-form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  .form-message {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .form-message.success {
+    color: #15803d;
+  }
+
+  .form-message.error {
+    color: #b91c1c;
+  }
 
 .command-grid {
   display: grid;

@@ -39,15 +39,12 @@
   - Connected frontend to backend commands API
   - Confirmed frontend runs on `http://localhost:5173`
   - Confirmed backend runs on `http://localhost:4000`
+  - Added frontend environment variable support with `VITE_API_BASE_URL`
+  - Added Dockerfiles for frontend and backend
+  - Added Docker Compose for frontend and backend services
 
   ## Next Steps
 
-  - Create initial folder structure
-  - Scaffold frontend app
-  - Scaffold backend app
-  - Add Docker Compose
-  - Add frontend environment variable for backend API URL
-  - Create Dockerfiles for frontend and backend
-  - Add Docker Compose for frontend, backend, and database
+  - Test the app with Docker Compose
   - Add PostgreSQL database service
   - Replace hardcoded command data with database data
