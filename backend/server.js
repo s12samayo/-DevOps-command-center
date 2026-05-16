@@ -126,6 +126,41 @@ const express = require("express");
       });
     }
   });
+  app.put("/api/commands/:id", async (req, res) => {
+    const { id } = req.params;
+    const { category, command, description } = req.body;
+
+    if (!category || !command || !description) {
+      return res.status(400).json({
+        message: "Category, command, and description are required.",
+      });
+    }
+
+    try {
+      const result = await pool.query(
+        `UPDATE commands
+         SET category = $1,
+             command = $2,
+             description = $3
+         WHERE id = $4
+         RETURNING id, category, command, description;`,
+        [category, command, description, id]
+      );
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({
+          message: "Command not found",
+        });
+      }
+
+      res.json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to update command",
+        error: error.message,
+      });
+    }
+  });
   setupDatabase()
     .then(() => {
       app.listen(PORT, () => {
