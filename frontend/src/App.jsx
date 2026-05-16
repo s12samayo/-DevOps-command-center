@@ -16,6 +16,7 @@
     const [form, setForm] = useState(initialForm)
     const [formStatus, setFormStatus] = useState('idle')
     const [formMessage, setFormMessage] = useState('')
+    const [editingCommandId, setEditingCommandId] = useState(null)
 
     async function loadCommands() {
       try {
@@ -46,34 +47,59 @@
         [name]: value,
       }))
     }
-async function handleDeleteCommand(id) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/commands/${id}`, {
-        method: 'DELETE',
+
+    function handleEditCommand(commandItem) {
+      setEditingCommandId(commandItem.id)
+      setForm({
+        category: commandItem.category,
+        command: commandItem.command,
+        description: commandItem.description,
       })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to delete command')
-      }
-
-      setCommands((currentCommands) =>
-        currentCommands.filter((item) => item.id !== id)
-      )
-    } catch (err) {
-      setFormStatus('error')
-      setFormMessage(err.message)
+      setFormStatus('idle')
+      setFormMessage('')
     }
-  }
+
+    function handleCancelEdit() {
+      setEditingCommandId(null)
+      setForm(initialForm)
+      setFormStatus('idle')
+      setFormMessage('')
+    }
+
+    async function handleDeleteCommand(id) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/commands/${id}`, {
+          method: 'DELETE',
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to delete command')
+        }
+
+        setCommands((currentCommands) =>
+          currentCommands.filter((item) => item.id !== id)
+        )
+      } catch (err) {
+        setFormStatus('error')
+        setFormMessage(err.message)
+      }
+    }
+
     async function handleSubmit(event) {
       event.preventDefault()
       setFormStatus('submitting')
       setFormMessage('')
 
+      const isEditing = editingCommandId !== null
+      const url = isEditing
+        ? `${API_BASE_URL}/api/commands/${editingCommandId}`
+        : `${API_BASE_URL}/api/commands`
+
       try {
-        const response = await fetch(`${API_BASE_URL}/api/commands`, {
-          method: 'POST',
+        const response = await fetch(url, {
+          method: isEditing ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -83,13 +109,22 @@ async function handleDeleteCommand(id) {
         const data = await response.json()
 
         if (!response.ok) {
-          throw new Error(data.message || 'Failed to create command')
+          throw new Error(data.message || 'Failed to save command')
         }
 
-        setCommands((currentCommands) => [...currentCommands, data])
+        if (isEditing) {
+          setCommands((currentCommands) =>
+            currentCommands.map((item) => (item.id === data.id ? data : item))
+          )
+          setEditingCommandId(null)
+          setFormMessage('Command updated.')
+        } else {
+          setCommands((currentCommands) => [...currentCommands, data])
+          setFormMessage('Command saved.')
+        }
+
         setForm(initialForm)
         setFormStatus('success')
-        setFormMessage('Command saved.')
       } catch (err) {
         setFormStatus('error')
         setFormMessage(err.message)
@@ -122,8 +157,12 @@ async function handleDeleteCommand(id) {
 
         <section className="command-form-section">
           <div className="section-heading">
-            <h2>Add A Command</h2>
-            <p>Save a new learning command into the PostgreSQL database.</p>
+            <h2>{editingCommandId ? 'Edit Command' : 'Add A Command'}</h2>
+            <p>
+              {editingCommandId
+                ? 'Update the selected command in the PostgreSQL database.'
+                : 'Save a new learning command into the PostgreSQL database.'}
+            </p>
           </div>
 
           <form className="command-form" onSubmit={handleSubmit}>
@@ -160,9 +199,25 @@ async function handleDeleteCommand(id) {
               />
             </label>
 
-            <button type="submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Saving...' : 'Save Command'}
-            </button>
+            <div className="form-actions">
+              <button type="submit" disabled={formStatus === 'submitting'}>
+                {formStatus === 'submitting'
+                  ? 'Saving...'
+                  : editingCommandId
+                    ? 'Update Command'
+                    : 'Save Command'}
+              </button>
+
+              {editingCommandId && (
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
 
             {formMessage && (
               <p className={`form-message ${formStatus}`}>{formMessage}</p>
@@ -178,21 +233,30 @@ async function handleDeleteCommand(id) {
 
           <div className="command-grid">
             {commands.map((item) => (
-               <article className="command-card" key={item.id}>
-    <div className="command-card-header">
-      <span className="category">{item.category}</span>
-      <button
-        className="delete-button"
-        type="button"
-        onClick={() => handleDeleteCommand(item.id)}
-        aria-label={`Delete ${item.command}`}
-      >
-        Delete
-      </button>
-    </div>
-    <code>{item.command}</code>
-    <p>{item.description}</p>
-  </article>
+              <article className="command-card" key={item.id}>
+                <div className="command-card-header">
+                  <span className="category">{item.category}</span>
+                  <div className="command-card-actions">
+                    <button
+                      className="edit-button"
+                      type="button"
+                      onClick={() => handleEditCommand(item)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-button"
+                      type="button"
+                      onClick={() => handleDeleteCommand(item.id)}
+                      aria-label={`Delete ${item.command}`}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+                <code>{item.command}</code>
+                <p>{item.description}</p>
+              </article>
             ))}
           </div>
         </section>
