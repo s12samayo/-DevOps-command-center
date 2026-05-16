@@ -1,121 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+const API_BASE_URL = 'http://localhost:4000'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [commands, setCommands] = useState([])
+  const [status, setStatus] = useState('loading')
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    async function loadCommands() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/commands`)
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`)
+        }
+
+        const data = await response.json()
+        setCommands(data)
+        setStatus('success')
+      } catch (err) {
+        setError(err.message)
+        setStatus('error')
+      }
+    }
+
+    loadCommands()
+  }, [])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <main className="app-shell">
+      <section className="intro">
+        <p className="eyebrow">DevOps Command Center</p>
+        <h1>Practice Linux, Git, Docker, and deployment workflows.</h1>
+        <p className="intro-copy">
+          This first screen proves the React frontend can talk to the Node.js
+          backend API. The command data below is coming from the backend service
+          running on port 4000.
+        </p>
+      </section>
+
+      <section className="status-panel" aria-live="polite">
+        <span className={`status-dot ${status}`}></span>
         <div>
-          <h1>Get started</h1>
+          <h2>Backend Connection</h2>
           <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+            {status === 'loading' && 'Loading command data from the API...'}
+            {status === 'success' &&
+              `Connected. Loaded ${commands.length} starter commands.`}
+            {status === 'error' && `Connection failed: ${error}`}
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <section className="commands-section">
+        <div className="section-heading">
+          <h2>Starter Command Library</h2>
+          <p>These are the first records served by our backend API.</p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+
+        <div className="command-grid">
+          {commands.map((item) => (
+            <article className="command-card" key={item.id}>
+              <span className="category">{item.category}</span>
+              <code>{item.command}</code>
+              <p>{item.description}</p>
+            </article>
+          ))}
         </div>
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 
