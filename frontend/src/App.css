@@ -156,7 +156,28 @@
   border-radius: 8px;
   background: #ffffff;
 }
+ .command-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
 
+  .delete-button {
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #b91c1c;
+    background: #fff1f2;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .delete-button:hover {
+    border-color: #fca5a5;
+    background: #ffe4e6;
+  }
 .command-card code {
   display: block;
   width: fit-content;

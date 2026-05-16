@@ -46,7 +46,26 @@
         [name]: value,
       }))
     }
+async function handleDeleteCommand(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/commands/${id}`, {
+        method: 'DELETE',
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to delete command')
+      }
+
+      setCommands((currentCommands) =>
+        currentCommands.filter((item) => item.id !== id)
+      )
+    } catch (err) {
+      setFormStatus('error')
+      setFormMessage(err.message)
+    }
+  }
     async function handleSubmit(event) {
       event.preventDefault()
       setFormStatus('submitting')
@@ -159,11 +178,21 @@
 
           <div className="command-grid">
             {commands.map((item) => (
-              <article className="command-card" key={item.id}>
-                <span className="category">{item.category}</span>
-                <code>{item.command}</code>
-                <p>{item.description}</p>
-              </article>
+               <article className="command-card" key={item.id}>
+    <div className="command-card-header">
+      <span className="category">{item.category}</span>
+      <button
+        className="delete-button"
+        type="button"
+        onClick={() => handleDeleteCommand(item.id)}
+        aria-label={`Delete ${item.command}`}
+      >
+        Delete
+      </button>
+    </div>
+    <code>{item.command}</code>
+    <p>{item.description}</p>
+  </article>
             ))}
           </div>
         </section>
