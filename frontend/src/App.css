@@ -78,82 +78,84 @@
 .section-heading {
   margin-bottom: 20px;
 }
+
 .command-form-section {
-    margin-bottom: 44px;
-  }
+  margin-bottom: 44px;
+}
 
-  .command-form {
-    display: grid;
-    gap: 16px;
-    max-width: 720px;
-    padding: 20px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: #ffffff;
-  }
+.command-form {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+  padding: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+}
 
-  .command-form label {
-    display: grid;
-    gap: 8px;
-    color: #111827;
-    font-weight: 700;
-  }
+.command-form label {
+  display: grid;
+  gap: 8px;
+  color: #111827;
+  font-weight: 700;
+}
 
-  .command-form input,
-  .command-form textarea {
-    width: 100%;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 11px 12px;
-    color: #111827;
-    background: #ffffff;
-  }
+.command-form input,
+.command-form select,
+.command-form textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 11px 12px;
+  color: #111827;
+  background: #ffffff;
+}
 
-  .command-form textarea {
-    min-height: 96px;
-    resize: vertical;
-  }
+.command-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
 
-  .form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
-  .command-form button {
-    width: fit-content;
-    border: 0;
-    border-radius: 6px;
-    padding: 11px 16px;
-    color: #ffffff;
-    background: #2563eb;
-    font-weight: 700;
-    cursor: pointer;
-  }
+.command-form button {
+  width: fit-content;
+  border: 0;
+  border-radius: 6px;
+  padding: 11px 16px;
+  color: #ffffff;
+  background: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-  .command-form .secondary-button {
-    border: 1px solid #cbd5e1;
-    color: #334155;
-    background: #ffffff;
-  }
+.command-form .secondary-button {
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  background: #ffffff;
+}
 
-  .command-form button:disabled {
-    cursor: not-allowed;
-    opacity: 0.65;
-  }
+.command-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
 
-  .form-message {
-    margin: 0;
-    font-weight: 700;
-  }
+.form-message {
+  margin: 0;
+  font-weight: 700;
+}
 
-  .form-message.success {
-    color: #15803d;
-  }
+.form-message.success {
+  color: #15803d;
+}
 
-  .form-message.error {
-    color: #b91c1c;
-  }
+.form-message.error {
+  color: #b91c1c;
+}
 
 .command-grid {
   display: grid;
@@ -168,49 +170,53 @@
   border-radius: 8px;
   background: #ffffff;
 }
- .command-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
+
+.command-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .command-card-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-end;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
 
-  .edit-button {
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: #1d4ed8;
-    background: #eff6ff;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
+.edit-button {
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-  .edit-button:hover {
-    border-color: #93c5fd;
-    background: #dbeafe;
-  }
-  .delete-button {
-    border: 1px solid #fecaca;
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: #b91c1c;
-    background: #fff1f2;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
+.edit-button:hover {
+  border-color: #93c5fd;
+  background: #dbeafe;
+}
 
-  .delete-button:hover {
-    border-color: #fca5a5;
-    background: #ffe4e6;
-  }
+.delete-button {
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #b91c1c;
+  background: #fff1f2;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  border-color: #fca5a5;
+  background: #ffe4e6;
+}
+
 .command-card code {
   display: block;
   width: fit-content;
