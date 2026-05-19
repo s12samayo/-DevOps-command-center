@@ -108,6 +108,12 @@ Build and start containers:
 docker compose up --build -d
 ```
 
+For EC2 with the Nginx reverse proxy on port 80, use the production override:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
+
 Check running services:
 
 ```bash
@@ -133,18 +139,24 @@ curl http://localhost:4000/health
 Frontend test from browser:
 
 ```text
-http://SERVER_PUBLIC_IP:5173
+http://SERVER_PUBLIC_IP
 ```
 
 Backend test from browser:
 
 ```text
-http://SERVER_PUBLIC_IP:4000/health
+http://SERVER_PUBLIC_IP/health
 ```
 
-## Nginx Reverse Proxy Plan
+API test from browser:
 
-For production, the app should eventually be served through Nginx on standard ports.
+```text
+http://SERVER_PUBLIC_IP/api/commands
+```
+
+## Nginx Reverse Proxy
+
+The production Compose override adds an Nginx reverse proxy container on standard HTTP port 80.
 
 Target public URLs:
 
@@ -159,12 +171,11 @@ Planned routing:
 - `/api` routes to the backend container
 - `/health` routes to the backend health check
 
-Future Nginx tasks:
+Future HTTPS tasks:
 
-- Install Nginx on EC2 or add an Nginx reverse proxy container
-- Route frontend traffic through port 80
-- Route API traffic to the backend
 - Add HTTPS with Certbot and Let's Encrypt
+- Point a real domain name to the EC2 public IP
+- Update Nginx for HTTPS after the domain is ready
 
 ## Useful Docker Commands
 
@@ -178,6 +189,12 @@ Restart the app:
 
 ```bash
 docker compose up --build -d
+```
+
+Restart the production app:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```
 
 View all logs:
@@ -200,7 +217,7 @@ Before calling this production-ready:
 - Strong database password is configured
 - Secrets are moved out of `docker-compose.yml`
 - Nginx reverse proxy is configured
-- HTTPS is enabled
+- HTTPS is enabled after a domain is attached
 - EC2 security group exposes only needed ports
 - PostgreSQL data backup plan exists
 - Deployment steps have been tested from a fresh clone
