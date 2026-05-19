@@ -1,161 +1,206 @@
 # Deployment Guide
 
-  This guide explains how to deploy DevOps Command Center to an AWS EC2 server using Docker Compose.
+This guide explains how to deploy DevOps Command Center to an AWS EC2 server using Docker Compose.
 
-  ## Current Stack
+## Current Stack
 
-  - React frontend served by Nginx
-  - Node.js Express backend
-  - PostgreSQL database
-  - Docker Compose for local and server orchestration
+- React frontend served by Nginx
+- Node.js Express backend
+- PostgreSQL database
+- Docker Compose for local and server orchestration
 
-  ## EC2 Requirements
+## EC2 Requirements
 
-  Recommended starting server:
+Recommended starting server:
 
-  - Ubuntu 22.04 or 24.04
-  - t2.micro or t3.micro for learning/testing
-  - At least 8 GB disk
-  - Security group allowing:
-    - SSH: port 22
-    - HTTP: port 80
-    - HTTPS: port 443
-    - Temporary testing ports if needed:
-      - Frontend: port 5173
-      - Backend: port 4000
+- Ubuntu 22.04 or 24.04
+- t2.micro or t3.micro for learning/testing
+- At least 8 GB disk
+- Security group allowing:
+  - SSH: port 22
+  - HTTP: port 80
+  - HTTPS: port 443
+  - Temporary testing ports if needed:
+    - Frontend: port 5173
+    - Backend: port 4000
 
-  ## Server Setup
+## Server Setup
 
-  Update packages:
+Update packages:
 
-  ```bash
-  sudo apt update
-  sudo apt upgrade -y
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
 
-  Install Docker:
+Install Docker:
 
-  sudo apt install -y docker.io docker-compose-v2
-  sudo systemctl enable docker
-  sudo systemctl start docker
+```bash
+sudo apt install -y docker.io docker-compose-v2
+sudo systemctl enable docker
+sudo systemctl start docker
+```
 
-  Allow your user to run Docker:
+Allow your user to run Docker:
 
-  sudo usermod -aG docker $USER
+```bash
+sudo usermod -aG docker $USER
+```
 
-  Log out and log back in after running that command.
+Log out and log back in after running that command.
 
-  Confirm Docker works:
+Confirm Docker works:
 
-  docker --version
-  docker compose version
+```bash
+docker --version
+docker compose version
+```
 
-  ## Clone The App
+## Clone The App
 
-  git clone git@github.com:s12samayo/-DevOps-command-center.git
-  cd -DevOps-command-center
+```bash
+git clone git@github.com:s12samayo/-DevOps-command-center.git
+cd -DevOps-command-center
+```
 
-  If SSH is not configured on the server, use HTTPS instead:
+If SSH is not configured on the server, use HTTPS instead:
 
-  git clone https://github.com/s12samayo/-DevOps-command-center.git
-  cd -DevOps-command-center
+```bash
+git clone https://github.com/s12samayo/-DevOps-command-center.git
+cd -DevOps-command-center
+```
 
-  ## Environment Variables
+## Environment Variables
 
-  The current Docker Compose file includes learning-friendly default values.
+Create a server environment file from the committed example:
 
-  Before production use, replace these values with stronger secrets:
+```bash
+cp .env.example .env
+nano .env
+```
 
-  POSTGRES_DB: devops_command_center
-  POSTGRES_USER: devops_user
-  POSTGRES_PASSWORD: devops_password
-  DB_NAME: devops_command_center
-  DB_USER: devops_user
-  DB_PASSWORD: devops_password
+Set a strong database password in both password fields:
 
-  Recommended future improvement:
+```text
+POSTGRES_PASSWORD=use_a_strong_password_here
+DB_PASSWORD=use_the_same_strong_password_here
+```
 
-  - Move secrets into a .env file
-  - Do not commit real production secrets to GitHub
+For local Docker testing, keep:
 
-  ## Start The App
+```text
+VITE_API_BASE_URL=http://localhost:4000
+```
 
-  Build and start containers:
+For EC2 testing through public temporary ports, use:
 
-  docker compose up --build -d
+```text
+VITE_API_BASE_URL=http://SERVER_PUBLIC_IP:4000
+```
 
-  Check running services:
+Do not commit the real `.env` file to GitHub.
 
-  docker compose ps
+## Start The App
 
-  View logs:
+Build and start containers:
 
-  docker compose logs backend
-  docker compose logs frontend
-  docker compose logs database
+```bash
+docker compose up --build -d
+```
 
-  ## Test The App
+Check running services:
 
-  Backend health check:
+```bash
+docker compose ps
+```
 
-  curl http://localhost:4000/health
+View logs:
 
-  Frontend test from browser:
+```bash
+docker compose logs backend
+docker compose logs frontend
+docker compose logs database
+```
 
-  http://SERVER_PUBLIC_IP:5173
+## Test The App
 
-  Backend test from browser:
+Backend health check:
 
-  http://SERVER_PUBLIC_IP:4000/health
+```bash
+curl http://localhost:4000/health
+```
 
-  ## Nginx Reverse Proxy Plan
+Frontend test from browser:
 
-  For production, the app should eventually be served through Nginx on standard ports.
+```text
+http://SERVER_PUBLIC_IP:5173
+```
 
-  Target public URLs:
+Backend test from browser:
 
-  http://SERVER_PUBLIC_IP
-  http://SERVER_PUBLIC_IP/api
+```text
+http://SERVER_PUBLIC_IP:4000/health
+```
 
-  Planned routing:
+## Nginx Reverse Proxy Plan
 
-  - / routes to the frontend container
-  - /api routes to the backend container
-  - /health routes to the backend health check
+For production, the app should eventually be served through Nginx on standard ports.
 
-  Future Nginx tasks:
+Target public URLs:
 
-  - Install Nginx on EC2 or add an Nginx reverse proxy container
-  - Route frontend traffic through port 80
-  - Route API traffic to the backend
-  - Add HTTPS with Certbot and Let's Encrypt
+```text
+http://SERVER_PUBLIC_IP
+http://SERVER_PUBLIC_IP/api
+```
 
-  ## Useful Docker Commands
+Planned routing:
 
-  Stop the app:
+- `/` routes to the frontend container
+- `/api` routes to the backend container
+- `/health` routes to the backend health check
 
-  docker compose down
+Future Nginx tasks:
 
-  Restart the app:
+- Install Nginx on EC2 or add an Nginx reverse proxy container
+- Route frontend traffic through port 80
+- Route API traffic to the backend
+- Add HTTPS with Certbot and Let's Encrypt
 
-  docker compose up --build -d
+## Useful Docker Commands
 
-  View all logs:
+Stop the app:
 
-  docker compose logs -f
+```bash
+docker compose down
+```
 
-  Rebuild after code changes:
+Restart the app:
 
-  docker compose up --build -d
+```bash
+docker compose up --build -d
+```
 
-  ## Production Checklist
+View all logs:
 
-  Before calling this production-ready:
+```bash
+docker compose logs -f
+```
 
-  - GitHub Actions CI passes
-  - Strong database password is configured
-  - Secrets are moved out of docker-compose.yml
-  - Nginx reverse proxy is configured
-  - HTTPS is enabled
-  - EC2 security group exposes only needed ports
-  - PostgreSQL data backup plan exists
-  - Deployment steps have been tested from a fresh clone
+Rebuild after code changes:
+
+```bash
+docker compose up --build -d
+```
+
+## Production Checklist
+
+Before calling this production-ready:
+
+- GitHub Actions CI passes
+- Strong database password is configured
+- Secrets are moved out of `docker-compose.yml`
+- Nginx reverse proxy is configured
+- HTTPS is enabled
+- EC2 security group exposes only needed ports
+- PostgreSQL data backup plan exists
+- Deployment steps have been tested from a fresh clone
